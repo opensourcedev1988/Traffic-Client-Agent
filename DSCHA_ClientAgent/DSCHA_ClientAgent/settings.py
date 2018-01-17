@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'client',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'DSCHA_ClientAgent.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'app', 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -122,5 +122,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'DSCHA_ClientAgent', 'static'),
+    #os.path.join(BASE_DIR, 'DSCHA_ClientAgent', 'static'),
+    os.path.join(BASE_DIR, 'app', 'templates', 'static'),
+    'static',
 )

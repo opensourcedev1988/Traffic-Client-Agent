@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path
 
-from client.views import main_page, ClientView, ServerView, CreateTCPTraffic
+from app.views import main_page, ClientView, ServerView, CreateTCPTraffic
 
 urlpatterns = [
     path('admin/', admin.site.urls),
