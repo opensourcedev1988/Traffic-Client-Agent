@@ -1,9 +1,76 @@
 {% extends "base.html" %}
 {% block content %}
+    <script src='/static/js/client.js'></script>
     <br>
     <div class="container">
-        <a href="{% url 'add-tcp-traffic' %}" class="btn btn-secondary btn-lg" role="button">Create TCP Traffic</a>
-        <a href="#" class="btn btn-secondary btn-lg" role="button">Create UDP Traffic</a>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTCPTrafficModal">
+            Create TCP Traffic
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="createTCPTrafficModal" tabindex="-1" role="dialog" aria-labelledby="createTCPTrafficModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createTCPTrafficModalLabel">Create TCP Traffic</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form data-toggle="validator" role="form">{% csrf_token %}
+                            <div class="form-group">
+                                <label for="dstIP" class="control-label">Destination IP</label>
+                                <input type="text" class="form-control" id="dstIP" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dstPort" class="control-label">Destination Port</label>
+                                <input class="form-control" id="dstPort" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="srvIP" class="control-label">Server IP</label>
+                                <input class="form-control" id="srvIP" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="srvPort" class="control-label">Server Port</label>
+                                <input class="form-control" id="srvPort" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="packetPause" class="control-label">Packet Pause</label>
+                                <input class="form-control" id="packetPause">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="connectionCount" class="control-label">Connection Count</label>
+                                <input class="form-control" id="connectionCount" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="portStart" class="control-label">Start From Port</label>
+                                <input class="form-control" id="portStart" required>
+                            </div>
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="createTCPTrafficSubmit">Create</button>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
     </div>
     <hr>
     {% for tcp in tcps %}

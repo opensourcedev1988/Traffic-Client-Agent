@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="jumbotron">
-    <div class="container">
-        <h2>Welcome to DSCHA Client Agent</h2>
-        <p>Go to client and server to start or stop your traffic.</p>
+    <div class="jumbotron">
+        <p class="lead">
+            <h2>Welcome to DSCHA Client Agent</h2>
+            <p>Go to client and server to start or stop your traffic.</p>
+        </p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="{% url 'client' %}" role="button">Go to Client</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'server' %}" role="button">Go to Server</a>
+        </p>
     </div>
-</div>
-    <hr>
-<footer>
-    <div class="container">
-        <p>&copy; F5 Networks Inc {% now 'Y' %}</p>
-    </div>
-</footer>
+
 {% endblock %}
 
 
