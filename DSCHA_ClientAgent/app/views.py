@@ -4,7 +4,11 @@ from django.shortcuts import render
 from .models import TCPTraffic, UDPTraffic
 from django.views.generic.edit import CreateView
 from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TCPTrafficSerializer, UDPTrafficSerializer
 import json
+
 
 
 # Create your views here.
@@ -62,3 +66,18 @@ class CreateTCPTraffic(CreateView):
 
     def get_success_url(self):
         return reverse('client')
+
+
+@api_view(['GET'])
+def UDPTraffic_RestAPI(request):
+    if request.method == 'GET':
+        udp_traffics = UDPTraffic.objects.all()
+        udp_serializer = UDPTrafficSerializer(udp_traffics, many=True)
+        return Response(udp_serializer.data)
+
+@api_view(['GET'])
+def TCPTraffic_RestAPI(request):
+    if request.method == 'GET':
+        tcp_traffics = TCPTraffic.objects.all()
+        tcp_serializer = TCPTrafficSerializer(tcp_traffics, many=True)
+        return Response(tcp_serializer.data)
