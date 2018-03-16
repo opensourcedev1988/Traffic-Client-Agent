@@ -17,12 +17,16 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path
 
-from app.views import main_page, ClientView, ServerView, CreateTCPTraffic
+from app.views import main_page, ClientView, ServerView, TCPTraffic_RestAPI, UDPTraffic_RestAPI, CreateTCPTraffic
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', main_page, name='main'),
     url(r'^client/$', ClientView.as_view(), name='client'),
     url(r'^server/$', ServerView.as_view(), name='server'),
-    url(r'^udptraffic/add/$', CreateTCPTraffic.as_view(), name='add-tcp-traffic')
+    url(r'^udptraffic/add/$', CreateTCPTraffic.as_view(), name='add-tcp-traffic'),
+
+    # RestAPI urls
+    url(r'^api/v1/TCPTraffics/$', TCPTraffic_RestAPI),
+    url(r'^api/v1/UDPTraffics/$', UDPTraffic_RestAPI)
 ]
