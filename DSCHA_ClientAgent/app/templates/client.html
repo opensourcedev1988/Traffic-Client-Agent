@@ -4,16 +4,16 @@
     <br>
     <div class="container">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTCPTrafficModal">
-            Create TCP Traffic
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUDPTrafficModal">
+            Create UDP Traffic
         </button>
 
         <!-- Modal -->
-        <div class="modal fade" id="createTCPTrafficModal" tabindex="-1" role="dialog" aria-labelledby="createTCPTrafficModalLabel" aria-hidden="true">
+        <div class="modal fade" id="createUDPTrafficModal" tabindex="-1" role="dialog" aria-labelledby="createUDPTrafficModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createTCPTrafficModalLabel">Create TCP Traffic</h5>
+                        <h5 class="modal-title" id="createUDPTrafficModalLabel">Create UDP Traffic</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -30,33 +30,14 @@
                                 <input class="form-control" id="dstPort" required>
                             </div>
 
-                            <div class="form-group">
-                                <label for="srvIP" class="control-label">Server IP</label>
-                                <input class="form-control" id="srvIP" required>
-                            </div>
 
                             <div class="form-group">
-                                <label for="srvPort" class="control-label">Server Port</label>
-                                <input class="form-control" id="srvPort" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="packetPause" class="control-label">Packet Pause</label>
-                                <input class="form-control" id="packetPause">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="connectionCount" class="control-label">Connection Count</label>
-                                <input class="form-control" id="connectionCount" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="portStart" class="control-label">Start From Port</label>
-                                <input class="form-control" id="portStart" required>
+                                <label for="packetPause" class="control-label">Packet Per Second</label>
+                                <input class="form-control" id="packetPerSecond">
                             </div>
 
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="createTCPTrafficSubmit">Create</button>
+                            <button type="submit" class="btn btn-primary" id="createUDPTrafficSubmit">Create</button>
                         </form>
 
                     </div>
@@ -119,9 +100,10 @@
     {% for udp in udps %}
         <div class="container">
             <h4><span class="badge badge-info">
-                UDP DST:{{ udp.dst_ip }}:{{ udp.dst_port }} Server: {{ udp.srv_ip }}:{{ udp.srv_port }}
-                Pkt pause: {{ udp.packet_pause }}  Count: {{ udp.count }}
-            </span></h4>
+                UDP DST:{{ udp.dst_ip }}:{{ udp.dst_port }}
+                Pkt per second: {{ udp.packet_per_second }}
+                </span>
+            </h4>
             <table class="table table-bordered">
                 <thead>
                     <tr>

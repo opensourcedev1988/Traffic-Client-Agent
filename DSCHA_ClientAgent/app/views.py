@@ -10,7 +10,6 @@ from .serializers import TCPTrafficSerializer, UDPTrafficSerializer
 import json
 
 
-
 # Create your views here.
 def main_page(request):
     return render(request, "index.html")
@@ -33,17 +32,15 @@ class ClientView(View):
     def post(self, request):
         dst_ip = request.POST['dst_ip']
         dst_port = request.POST['dst_port']
-        srv_ip = request.POST['srv_ip']
-        srv_port = request.POST['srv_port']
-        packet_pause = request.POST['packet_pause']
-        count = request.POST['count']
-        port_start = request.POST['port_start']
+        packet_per_second = request.POST['packet_per_second']
 
-        udp_traffic = UDPTraffic(dst_ip = dst_ip, dst_port = dst_port, srv_ip = srv_ip, srv_port = srv_port,
-                                 packet_pause = packet_pause, count = count, port_start = port_start)
-        udp_traffic.save();
+        udp_traffic = UDPTraffic(dst_ip=dst_ip, dst_port=dst_port,
+                                 packet_per_second=packet_per_second,)
+        udp_traffic.save()
+        print("Create UDP traffic object")
 
         return HttpResponse(json.dumps({"dst_ip": dst_ip}))
+
 
 class ServerView(View):
 
@@ -74,6 +71,7 @@ def UDPTraffic_RestAPI(request):
         udp_traffics = UDPTraffic.objects.all()
         udp_serializer = UDPTrafficSerializer(udp_traffics, many=True)
         return Response(udp_serializer.data)
+
 
 @api_view(['GET'])
 def TCPTraffic_RestAPI(request):
