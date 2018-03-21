@@ -1,12 +1,14 @@
 from django.views.generic import DeleteView, View
 from django.urls import reverse
 from django.shortcuts import render
-from .models import TCPTraffic, UDPTraffic
+from .models import TCPTraffic, UDPTraffic, UDPServer
 from django.views.generic.edit import CreateView
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import TCPTrafficSerializer, UDPTrafficSerializer
+from rest_framework import status
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from .serializers import TCPTrafficSerializer, UDPTrafficSerializer, UDPServerSerializer
 import json
 
 
@@ -65,17 +67,30 @@ class CreateTCPTraffic(CreateView):
         return reverse('client')
 
 
-@api_view(['GET'])
-def UDPTraffic_RestAPI(request):
-    if request.method == 'GET':
-        udp_traffics = UDPTraffic.objects.all()
-        udp_serializer = UDPTrafficSerializer(udp_traffics, many=True)
-        return Response(udp_serializer.data)
+class UDPTrafficListCreateApiView(ListCreateAPIView):
+    serializer_class = UDPTrafficSerializer
+
+    def get_queryset(self):
+        return UDPTraffic.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
-@api_view(['GET'])
-def TCPTraffic_RestAPI(request):
-    if request.method == 'GET':
-        tcp_traffics = TCPTraffic.objects.all()
-        tcp_serializer = TCPTrafficSerializer(tcp_traffics, many=True)
-        return Response(tcp_serializer.data)
+class UDPTrafficDetailApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UDPTrafficSerializer
+    queryset = UDPTraffic.objects.all()
+
+class UDPServerListCreateApiView(ListCreateAPIView):
+    serializer_class = UDPServerSerializer
+
+    def get_queryset(self):
+        return UDPServer.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+class UDPServerDetailApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UDPServerSerializer
+    queryset = UDPServer.objects.all()
+
