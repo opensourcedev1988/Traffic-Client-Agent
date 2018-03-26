@@ -15,6 +15,7 @@ class UDPTrafficSerializer(serializers.ModelSerializer):
         model = UDPTraffic
         fields = ('id', 'dst_ip', 'dst_port', 'packet_per_second', 'is_start', 'celery_id')
 
+
 class UDPServerSerializer(serializers.ModelSerializer):
 
     class Meta:

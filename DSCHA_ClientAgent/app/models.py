@@ -14,6 +14,7 @@ class UDPTraffic(models.Model):
 
         return "VIP: {}:{}".format(self.dst_ip, self.dst_port)
 
+
 class UDPServer(models.Model):
     ip = models.GenericIPAddressField()
     port = models.IntegerField()

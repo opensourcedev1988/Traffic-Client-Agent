@@ -1,6 +1,6 @@
 from celery import task, shared_task, uuid
-from celery.task.control import revoke
 from UDPTraffic.udptraffic import UDPTraffic
+from UDPTraffic.udpserver import UDPEchoServer
 
 
 @shared_task
@@ -13,13 +13,22 @@ def start_udp_traffic(vip, vport, packet_rate):
     :param packet_rate:
     :return:
     """
-    u = UDPTraffic(vip, vport, int(packet_rate))
+    udp = UDPTraffic(vip, vport, int(packet_rate))
     # Use source ports 20000 - 35000
-    u.udp_port_range_start = 20000
-    u.udp_port_range_stop = 35000
-    u.start()
+    udp.udp_port_range_start = 20000
+    udp.udp_port_range_stop = 35000
+    udp.start()
 
 
-def stop_udp_traffic(task_id):
-
-    revoke(task_id, terminate=True, signal="SIGKILL")
+@shared_task
+def start_udp_server(srv_ip, srv_port):
+    """
+    To start this udp server, call
+    start_udp_server.apply_async((vip, vport, packet_rate), task_id = uuid())
+    :param srv_ip:
+    :param srv_port:
+    :return:
+    """
+    udp_srv = UDPEchoServer(srv_ip, srv_port)
+    udp_srv.start()
+    print("UDP server started")

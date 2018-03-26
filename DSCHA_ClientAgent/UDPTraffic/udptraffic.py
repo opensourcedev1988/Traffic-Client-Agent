@@ -24,8 +24,6 @@ import time
 import errno
 import threading
 import select
-import socket
-from optparse import OptionParser
 
 
 class UDPPacket(object):
@@ -151,7 +149,7 @@ class UDPTraffic(object):
             self.client_read_thread = threading.Thread(target=self._read_server_msg)
             self.client_read_thread.daemon = True
             self.client_read_thread.start()
-        # self.client_read_thread.join()
+        # self.client_thread.join()
 
     def stop(self):
         """

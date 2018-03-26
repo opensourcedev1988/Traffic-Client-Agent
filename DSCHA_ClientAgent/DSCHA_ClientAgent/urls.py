@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path
 
-from app.views import main_page, ClientView, ServerView, UDPTrafficListCreateApiView, UDPTrafficDetailApiView, \
+from app.views import main_page, ClientView, ServerView, \
+    UDPTrafficListCreateApiView, UDPTrafficDetailApiView, \
     UDPServerListCreateApiView, UDPServerDetailApiView, CreateTCPTraffic
 
 urlpatterns = [
