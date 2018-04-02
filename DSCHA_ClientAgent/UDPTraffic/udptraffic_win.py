@@ -80,8 +80,11 @@ class UDPTraffic(object):
 
         self.report_stat_thread = None
         self.client_read_thread = None
-        self.epoll_obj = select.epoll()
-        self.connections = {}
+        if sys.platform == "linux" or sys.platform == "linux2":
+            self.epoll_obj = select.epoll()
+            self.connections = {}
+        else:
+            self.epoll_obj = None
         self.client_read_timeout = 2
         self.lock = threading.RLock()
         self.sending_client_data = False
@@ -151,9 +154,10 @@ class UDPTraffic(object):
         # self.client_thread = threading.Thread(target=self._send_client_traffic)
         # self.client_thread.daemon = True
         # self.client_thread.start()
-        self.client_read_thread = threading.Thread(target=self._read_server_msg)
-        self.client_read_thread.daemon = True
-        self.client_read_thread.start()
+        if self.epoll_obj:
+            self.client_read_thread = threading.Thread(target=self._read_server_msg)
+            self.client_read_thread.daemon = True
+            self.client_read_thread.start()
         self.report_stat_thread = threading.Thread(target=self._report_stat)
         self.report_stat_thread.start()
         self._send_client_traffic()
@@ -165,9 +169,10 @@ class UDPTraffic(object):
         """
         if self.sending_client_data:
             self.sending_client_data = False
-        time.sleep(self.client_read_timeout)
-        self.read_client_data = False
-        self.epoll_obj.close()
+        if self.epoll_obj:
+            time.sleep(self.client_read_timeout)
+            self.read_client_data = False
+            self.epoll_obj.close()
 
     def _send_client_traffic(self):
         """
@@ -221,9 +226,10 @@ class UDPTraffic(object):
 
                 self.udp_data_dictionary[str(self.packet_sequence)] = [time.time(), None, sock]
                 # Register this socket to epoll
-                self.epoll_obj.register(sock.fileno(), select.EPOLLIN)
-                # Update connections dict
-                self.connections[sock.fileno()] = sock
+                if self.epoll_obj:
+                    self.epoll_obj.register(sock.fileno(), select.EPOLLIN)
+                    # Update connections dict
+                    self.connections[sock.fileno()] = sock
                 # Packet is a stringified version of the current sequence number
                 sock.sendto(bytes(str(self.packet_sequence), "utf-8"),
                             0, (self.destination_ip, self.destination_port))
@@ -242,7 +248,21 @@ class UDPTraffic(object):
 
                 packet_count += 1
 
-            time.sleep(.001)
+            if not self.epoll_obj:
+                open_sockets = [socket for t1, t2, socket in self.udp_data_dictionary.values()]
+                while len(open_sockets) > 500:
+                    fds = select.select(open_sockets[:501], [], [], 0)
+                    if fds[0]:
+                        for s in fds[0]:
+                            recv_data = str(s.recv(1024), "utf-8")
+                            self.udp_data_dictionary[recv_data][1] = time.time()
+                    open_sockets = open_sockets[501:]
+                if open_sockets:
+                    fds = select.select(open_sockets, [], [], 0)
+                    if fds[0]:
+                        for s in fds[0]:
+                            recv_data = str(s.recv(1024), "utf-8")
+                            self.udp_data_dictionary[recv_data][1] = time.time()
 
             if time.time() - current_time >= 1:
                 cur_pt += 1
@@ -271,8 +291,9 @@ class UDPTraffic(object):
                             check_pkt_count += 1
                         dict_socket = self.udp_data_dictionary[data][2]
                         del self.udp_data_dictionary[data]
-                        self.epoll_obj.unregister(dict_socket.fileno())
-                        del self.connections[dict_socket.fileno()]
+                        if self.epoll_obj:
+                            self.epoll_obj.unregister(dict_socket.fileno())
+                            del self.connections[dict_socket.fileno()]
                         dict_socket.close()
                     if check_pkt_count != 0:
                         avg_latency = latency/check_pkt_count
@@ -295,19 +316,19 @@ class UDPTraffic(object):
                 current_time = time.time()
                 packet_count = 0
 
-        time.sleep(.001)
-
     def _read_server_msg(self):
         self.log.info("Start client reading thread")
         while self.read_client_data:
-            # Linux, using epoll the poll data
-            events = self.epoll_obj.poll(0)
-            for fd, event in events:
-                if event & select.EPOLLIN:
-                    recv_data = str(self.connections[fd].recv(1024), "utf-8")
-                    if recv_data in self.udp_data_dictionary:
+            if self.epoll_obj:
+                # Linux, using epoll the poll data
+                events = self.epoll_obj.poll(0)
+                for fd, event in events:
+                    if event & select.EPOLLIN:
+                        recv_data = str(self.connections[fd].recv(1024), "utf-8")
                         self.udp_data_dictionary[recv_data][1] = time.time()
-            time.sleep(.001)
+            else:
+                # Not linux, sleep to prevent throttling
+                time.sleep(0.1)
 
     def _report_stat(self):
         self.log.info("Start posting stat to harness controller")
@@ -332,7 +353,7 @@ class UDPTraffic(object):
                 #     self.log.error("Post UDP traffic stats fail")
                 #     self.log.error(r.text)
                 self.report_timer = time.time()
-            time.sleep(0.1)
+            time.sleep(0.01)
 
 
 # def get_parser():

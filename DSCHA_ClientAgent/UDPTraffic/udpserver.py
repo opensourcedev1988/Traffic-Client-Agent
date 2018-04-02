@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -24,6 +24,7 @@ class UDPEchoServer(object):
     def start(self):
 
         self.server = socketserver.UDPServer((self.ip, self.port), MyUDPHandler)
+        print("Start udp server %s:%s" % (self.ip, self.port))
         self.server.serve_forever()
 
 

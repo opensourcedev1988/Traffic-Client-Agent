@@ -78,12 +78,15 @@ class UDPTrafficListCreateApiView(ListCreateAPIView):
         return UDPTraffic.objects.all()
 
     def perform_create(self, serializer):
-        data = serializer.validated_data
-        if 'is_start' in data and data['is_start'] is True:
-            celery_id = uuid()
-            serializer.validated_data['celery_id'] = celery_id
-            start_udp_traffic.apply_async((serializer.validated_data['dst_ip'], serializer.validated_data['dst_port'], serializer.validated_data['packet_per_second']),
-                                          task_id=celery_id)
+        # data = serializer.validated_data
+        # logger.debug(data)
+        # if 'is_start' in data and data['is_start'] is True:
+        #     celery_id = uuid()
+        #     serializer.validated_data['celery_id'] = celery_id
+        #     start_udp_traffic.apply_async((serializer.validated_data['dst_ip'],
+        #                                    serializer.validated_data['dst_port'],
+        #                                    serializer.validated_data['packet_per_second']),
+        #                                   task_id=celery_id)
         serializer.save()
 
 
