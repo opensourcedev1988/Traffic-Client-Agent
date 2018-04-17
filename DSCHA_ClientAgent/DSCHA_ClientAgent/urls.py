@@ -17,9 +17,8 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path
 
-from app.views import main_page, ClientView, ServerView, \
-    UDPTrafficListCreateApiView, UDPTrafficDetailApiView, \
-    UDPServerListCreateApiView, UDPServerDetailApiView, CreateTCPTraffic
+from app.views import main_page, ClientView, ServerView, CreateTCPTraffic
+from app import api as app_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,8 +28,8 @@ urlpatterns = [
     url(r'^udptraffic/add/$', CreateTCPTraffic.as_view(), name='add-tcp-traffic'),
 
     # RestAPI urls
-    url(r'^api/v1/UDPTraffics/$', UDPTrafficListCreateApiView.as_view()),
-    url(r'^api/v1/UDPTraffics/(?P<pk>[0-9]+)/$', UDPTrafficDetailApiView.as_view()),
-    url(r'^api/v1/UDPServers/$', UDPServerListCreateApiView.as_view()),
-    url(r'^api/v1/UDPServers/(?P<pk>[0-9]+)/$', UDPServerDetailApiView.as_view())
+    url(r'^api/v1/UDPTraffics/$', app_api.UDPTrafficListCreateApiView.as_view()),
+    url(r'^api/v1/UDPTraffics/(?P<pk>[0-9]+)/$', app_api.UDPTrafficDetailApiView.as_view()),
+    url(r'^api/v1/UDPServers/$', app_api.UDPServerListCreateApiView.as_view()),
+    url(r'^api/v1/UDPServers/(?P<pk>[0-9]+)/$', app_api.UDPServerDetailApiView.as_view())
 ]

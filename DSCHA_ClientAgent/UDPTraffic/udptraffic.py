@@ -277,10 +277,10 @@ class UDPTraffic(object):
                     if check_pkt_count != 0:
                         avg_latency = latency/check_pkt_count
                     self.log.info("====================STAT===================")
-                    self.log.info("Total bytes sent: %s" % total_bits)
+                    # self.log.info("Total bytes sent: %s" % total_bits)
                     self.log.info("Total packets sent: %s" % len(check_list[check_pt]))
-                    self.log.info("Total packets received: %s" %
-                                  (len(check_list[check_pt]) - drop_packet))
+                    # self.log.info("Total packets received: %s" %
+                    #               (len(check_list[check_pt]) - drop_packet))
                     self.log.info("Total drop packets: %s" % drop_packet)
                     self.log.info("Average latency: %.4F" % avg_latency)
                     self.stat_queue.put({"app_id": self.controller_app_id,
@@ -314,7 +314,7 @@ class UDPTraffic(object):
         config = configparser.ConfigParser()
         config.read(harness_config_path)
         controller_ip = config.get("harness", "controller")
-        url = "http://%s:8000/api/v1/UDPTrafficStat/" % controller_ip
+        url = "http://%s:8000/api/v1/udptrafficstat/" % controller_ip
 
         while self.sending_client_data is True:
             if time.time() - self.report_timer > 5:

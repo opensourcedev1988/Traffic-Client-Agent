@@ -1,4 +1,5 @@
 from celery import task, shared_task, uuid
+from DSCHA_ClientAgent import celery_app
 from UDPTraffic.udptraffic import UDPTraffic
 from UDPTraffic.udpserver import UDPEchoServer
 
